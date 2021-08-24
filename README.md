@@ -9,4 +9,5 @@ QR input (via either normal camera or QR reader)
 
 Display upside camera  
 Vision recognition for the object (this process is not shown to user)  
+> Problem with using single resource at two places
 Recognition result return & show to user  
