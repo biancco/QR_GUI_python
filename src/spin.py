@@ -1,22 +1,18 @@
 #!/usr/bin/env python
 
-import rospy
+#import rospy
 import cv2
 import os
 import pyzbar.pyzbar as pyzbar
 
-from cv_bridge import CvBridge
-from sensor_msgs.msg import Image
+#from cv_bridge import CvBridge
+#from sensor_msgs.msg import Image
 from tkinter import *
 from tkinter.ttk import *
 from PIL import ImageTk, Image
 
-global cap
-data_list = []
-used_codes = []
 
-
-def init():
+class Myframe(Frame):
     def __init__(self, master, cap):
         Frame.__init__(self, master)
         self.master = master
@@ -35,7 +31,6 @@ def init():
         lblqr.pack(side=TOP, ipady=50)
 
 
-
 def main():
     root = Tk()
     root.geometry("600x550+100+100")
@@ -49,7 +44,4 @@ def main():
 
 
 if __name__ == '__main__':
-    try:
-        init()
-    except rospy.ROSInterruptException:
-        pass
+        main()
