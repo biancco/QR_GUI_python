@@ -1,17 +1,22 @@
-from tkinter import *
-from tkinter.ttk import *
+#!/usr/bin/env python
+
+import rospy
 import cv2
 import os
-from PIL import ImageTk, Image
 import pyzbar.pyzbar as pyzbar
 
-global data_list
-global used_codes
+from cv_bridge import CvBridge
+from sensor_msgs.msg import Image
+from tkinter import *
+from tkinter.ttk import *
+from PIL import ImageTk, Image
+
 global cap
 data_list = []
 used_codes = []
 
-class Myframe(Frame):
+
+def init():
     def __init__(self, master, cap):
         Frame.__init__(self, master)
         self.master = master
@@ -30,51 +35,7 @@ class Myframe(Frame):
         lblqr.pack(side=TOP, ipady=50)
 
 
-'''
-   #qr feedback (optional)
-        frame2 = Frame(self)
-        frame2.pack(fill=X)
-        img = PhotoImage(file='test.gif')
-        lblqr = Label(image=img)
-        lblqr.image = img
-        #lblqr.config(anchor=)
-        lblqr.pack()
 
-
-class Reader():
-    cap = cv2.VideoCapture(0)
-
-    for i in data_list:
-        used_codes.append(i.rsplit('/n'))
-
-    while True:
-        success, frame = cap.read()
-
-        if success:
-            for code in pyzbar.decode(frame):
-                cv2.imwrite('grbarcode_image.png',frame)
-                my_code = code.data.decode('utf-8')
-                if my_code not in used_codes:
-                    print("인식 성공 : ",my_code)
-                    used_codes.append(my_code)
-
-                    f2 = open("grbarcode_data.txt", "a", encoding="utf8")
-                    f2.write(my_code+'\n')
-                    f2.close()
-
-                else:
-                    print("이미 인식된 코드입니다.")
-
-
-            #cv2.imshow('cam',frame)
-
-            key = cv2.waitKey(1)
-            if key == 27:
-                break
-
-    cap.release()
-    cv2.destroyAllWindows()
-'''
 def main():
     root = Tk()
     root.geometry("600x550+100+100")
@@ -88,4 +49,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        init()
+    except rospy.ROSInterruptException:
+        pass
