@@ -1,51 +1,41 @@
+#!/usr/bin/env python
+import sys
+import rospy
 import cv2
-import pyzbar.pyzbar as pyzbar
+from std_msgs.msg import String, Int32
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge, CvBridgeError
+from PIL import ImageTk, Image
 
-data_list = []
-used_codes = []
+class imageLoader:
 
-try:
-    f = open("grbarcode_data.txt", "r", encoding="utf8")
-    data_list = f.readlines()
-except FileNotFoundError:
-    pass
-else:
-    f.close()
+    def __init__(self):
+        self.image_pub = rospy.Publisher("/image_topic",Image)
+        self.bridge = CvBridge()
+        self.start_sub = rospy.Subscriber("/start_sign",Int32,self.start_callback)
+        self.recognizer_sub = rospy.Subscriber("/result",Int32,self.recognizer_callback)
+        self.show_camera = 1;
 
-
-cap = cv2.VideoCapture(0)
-
-for i in data_list:
-    used_codes.append(i.rsplit('/n'))
-
-while True:
-    success, frame = cap.read()
-
-    if success:
-        for code in pyzbar.decode(frame):
-            cv2.imwrite('grbarcode_image.png',frame)
-            my_code = code.data.decode('utf-8')
-            if my_code not in used_codes:
-                print("인식 성공 : ",my_code)5
-                used_codes.append(my_code)
-
-                f2 = open("grbarcode_data.txt", "a", encoding="utf8")
-                f2.write(my_code+'\n')
-                f2.close()
-
-            else:
-                print("이미 인식된 코드입니다.")
-
-
-        cv2.imshow('cam',frame)
-
-
-        key = cv2.waitKey(1)
-        if key == 27:
-            break
-
-cap.release()
-cv2.destroyAllWindows()
+    def start_callback(self,msg): 
 
 
 
+
+
+        
+        while not rospy.is_shutdown():
+            try:
+                self.image_pub.publish(self.bridge.cv2_to_imgmsg(cv_image, "bgr8"))
+            except CvBridgeError as e:
+                print(e)
+
+    def recognizer_callback(self,data):
+        if(data == 0):
+            show_camera = 0;
+        else:
+            show_camera = 1;
+
+
+if __name__ == '__main__':
+    il = imageLoader()
+    rospy.spin()

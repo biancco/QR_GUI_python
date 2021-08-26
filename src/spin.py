@@ -1,47 +1,31 @@
 #!/usr/bin/env python
-
-#import rospy
+import rospy
 import cv2
-import os
+import sys
 import pyzbar.pyzbar as pyzbar
-
-#from cv_bridge import CvBridge
-#from sensor_msgs.msg import Image
+from std_msgs.msg import Int32
 from tkinter import *
 from tkinter.ttk import *
 from PIL import ImageTk, Image
 
 
-class Myframe(Frame):
-    def __init__(self, master, cap):
-        Frame.__init__(self, master)
-        self.master = master
-        self.master.title("Spin")
-        self.pack(fill=BOTH, expand=True) #사용되지 않은 공간을 모두 활용
+class waitingScreen:
 
-        #text
-        frame1 = Frame(self)
-        frame1.pack(fill=X)
-        lblName = Label(frame1, text="Please show QR code",width=100) #Label은 텍스트,이미지칸
-        lblName.config(anchor=CENTER)
-        lblName.pack(ipady=40)
-        img = PhotoImage(file='test.gif')
-        lblqr = Label(image=img)
-        lblqr.image = img
-        lblqr.pack(side=TOP, ipady=50)
+    def __init__(self):
+        self.service_pub = rospy.Publisher("/start_sign",Int32)
+        self.complete_sub = rospy.Subscriber("/end_sign",Int32,self.reboot_callback)
+
+    def reboot_callback(self,msg):
 
 
-def main():
-    root = Tk()
-    root.geometry("600x550+100+100")
-    cap = cv2.VideoCapture(0)
-    app = Myframe(root, cap)
-    root.mainloop()
-    key = cv2.waitKey(1)
-    if key == 27:
-        cap.release()
-        cv2.destroyAllWindows()
+def main(args):
+    sc = waitingScreen()
+    rospy.init_node('waiting_screen', anonymous=True)
+    try:
+        rospy.spin()
+    except KeyboardInterrupt:
+        print("Shutting down")
+    cv2.destroyAllWindows()
 
-
-if __name__ == '__main__':
-        main()
+    if __name__ == '__main__':
+        main(sys.argv)
