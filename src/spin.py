@@ -29,22 +29,6 @@ class Myframe(Frame):
         lblqr.image = img
         lblqr.pack(side=TOP, ipady=50)
 
-        
-        frame2 = Frame(self)
-        frame2.pack(fill=X)
-        frame = cap.read()
-        scene = Image.fromarray(frame)
-        imgtk = ImageTk.PhotoImage(video=scene)
-        lblv = Label()
-        lblv.imgtk = imgtk
-        lblv.configure(image=imgtk)
-        lblv.pack()
-
-        
-
-    
-
-
 
 '''
    #qr feedback (optional)
